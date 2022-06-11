@@ -17,6 +17,10 @@ struct Home: View {
         
         VStack(spacing: 15){
             
+            HStack(spacing: 0){
+                
+            }
+            
             VStack(alignment: .leading, spacing: 12){
                 
                 Button {
@@ -42,21 +46,32 @@ struct Home: View {
             //Snap Carousel
             SnapCarousel(index: $currentIndex, items: posts) {post in
                 
-                GeometryReader{proxy in
+                GeometryReader { proxy in
                     let size = proxy.size
                     
                     Image(post.postImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: size.height, alignment: .center)
+                        .frame(width: size.width)
                         .cornerRadius(12)
                 }
             }
-            .padding(.vertical,150)
+            .padding(.vertical, 40)
+            
+            //custom paging control
+            HStack (spacing: 10) {
+                ForEach ( posts.indices, id: \.self){ index in
+                    Circle()
+                        .fill(Color.black.opacity(currentIndex == index ? 1 : 0.1))
+                        .frame(width: 10, height: 10)
+                        .scaleEffect(currentIndex == index ? 1.4 : 1)
+                        .animation(.spring(), value: currentIndex == index)
+                }
+            }
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .onAppear{
-            for index in 1...5 {
+            for index in 1...7 {
                 posts.append(Post(postImage: "post\(index)"))
             }
         }

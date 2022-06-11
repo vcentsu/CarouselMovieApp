@@ -18,7 +18,7 @@ struct SnapCarousel<Content: View, T: Identifiable>: View {
     var trailingSpace: CGFloat
     @Binding var index: Int
     
-    init(spacing: CGFloat = 15, trailingSpace: CGFloat = 100, index: Binding<Int>, items: [T], @ViewBuilder content: @escaping (T)->Content){
+    init(spacing: CGFloat = 15, trailingSpace: CGFloat = 110, index: Binding<Int>, items: [T], @ViewBuilder content: @escaping (T)->Content){
         self.list = items
         self.spacing = spacing
         self.trailingSpace = trailingSpace
@@ -32,6 +32,11 @@ struct SnapCarousel<Content: View, T: Identifiable>: View {
     var body: some View {
         GeometryReader{proxy in
             
+            //Width Snap Carousel
+            
+            let width = (proxy.size.width - trailingSpace)
+            let adjustMentWidth = (trailingSpace / 2 ) - (spacing * CGFloat(currentIndex + 1))
+            
             HStack(spacing: spacing){
                 ForEach(list){ item in
                     content(item)
@@ -39,13 +44,31 @@ struct SnapCarousel<Content: View, T: Identifiable>: View {
                 }
             }
             .padding(.horizontal, spacing)
-            .offset(x: offset)
+            .offset(x: (CGFloat(currentIndex) * -width) + (currentIndex != 0 ? adjustMentWidth : 0) + offset)
             .gesture(
                 DragGesture()
                     .updating($offset, body: { value, out, _ in
                         out = value.translation.width
                     })
                     .onEnded({value in
+                        
+                        let offsetX = value.translation.width
+                        let progress = -offsetX / width
+                        let roundIndex = progress.rounded()
+                        
+                        //MIN
+                        currentIndex = max(min (currentIndex + Int(roundIndex), list.count - 1) , 0)
+                        
+                        //update index
+                        currentIndex = index
+                    })
+                    .onChanged({ value in
+                        let offsetX = value.translation.width
+                        let progress = -offsetX / width
+                        let roundIndex = progress.rounded()
+                        
+                        //MIN
+                        index = max(min (currentIndex + Int(roundIndex), list.count - 1) , 0)
                         
                     })
             )
