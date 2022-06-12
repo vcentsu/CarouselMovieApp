@@ -9,17 +9,15 @@ import SwiftUI
 
 struct Home: View {
     
-    @GestureState var offset: CGFloat = 0
+    //@GestureState var offset: CGFloat = 0
     @State var currentIndex: Int = 0
     @State var posts: [Post] = []
+    @State var currentTab = "Recent"
+    @Namespace var animation
     
     var body: some View {
         
         VStack(spacing: 15){
-            
-            HStack(spacing: 0){
-                
-            }
             
             VStack(alignment: .leading, spacing: 12){
                 
@@ -43,6 +41,15 @@ struct Home: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
             
+            //Segment Control
+            HStack(spacing: 0){
+                TabButton(title: "Recent", animation: animation, currentTab: $currentTab)
+                TabButton(title: "Favorites", animation: animation, currentTab: $currentTab)
+            }
+            .background(Color.black.opacity(0.04), in: RoundedRectangle(cornerRadius: 10))
+            .padding(.horizontal)
+            
+            
             //Snap Carousel
             SnapCarousel(index: $currentIndex, items: posts) {post in
                 
@@ -60,7 +67,9 @@ struct Home: View {
             
             //custom paging control
             HStack (spacing: 10) {
+                
                 ForEach ( posts.indices, id: \.self){ index in
+                    
                     Circle()
                         .fill(Color.black.opacity(currentIndex == index ? 1 : 0.1))
                         .frame(width: 10, height: 10)
@@ -68,6 +77,7 @@ struct Home: View {
                         .animation(.spring(), value: currentIndex == index)
                 }
             }
+            .padding(.bottom, 40)
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .onAppear{
