@@ -34,7 +34,7 @@ struct Home: View {
                     .foregroundColor(.primary)
                 }
                 
-                Text("My Movie")
+                Text("Marvel Movies")
                     .font(.title)
                     .fontWeight(.black)
             }
@@ -65,7 +65,7 @@ struct Home: View {
             }
             .padding(.vertical, 40)
             
-            //custom paging control
+            //Indicator (Custom Paging Control)
             HStack (spacing: 10) {
                 
                 ForEach ( posts.indices, id: \.self){ index in
