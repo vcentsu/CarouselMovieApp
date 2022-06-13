@@ -17,91 +17,116 @@ struct Home: View {
     
     var body: some View {
         
-        VStack(spacing: 15){
+        ZStack{
             
-//            VStack(alignment: .leading, spacing: 12){
-//
-//                Button {
-//
-//                } label: {
-//                    Label {
-//                        Text("Back")
-//                            .fontWeight(.semibold)
-//                    } icon: {
-//                        Image(systemName: "chevron.left")
-//                            .font(.title2.bold())
-//                    }
-//                    .foregroundColor(.primary)
-//                }
-//
-//                Text("Marvel Movies")
-//                    .font(.title)
-//                    .fontWeight(.black)
-//            }
-//            .frame(maxWidth: .infinity, alignment: .leading)
-//            .padding()
-            
-            
-            //Snap Carousel
-            SnapCarousel(trailingSpace: 150, index: $currentIndex, items: posts) {post in
-                
-                VStack(spacing: 10){
+            //TabView
+            TabView(selection: $currentIndex){
+                ForEach(posts.indices, id: \.self){ index in
+                    
                     GeometryReader { proxy in
                         let size = proxy.size
                         
-                        Image(post.postImage)
+                        Image(posts[index].postImage)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: size.width, height: size.height)
-                            .cornerRadius(25)
+                            .cornerRadius(1)
                     }
-                    .frame(height: getRect().height / 2.5)
-                    .padding(.bottom, 15)
-                    
-                    //Data
-                    Text(post.title)
-                        .font(.title2.bold())
-                    
-                    HStack(spacing: 3){
-                        ForEach(1...5, id: \.self){ index in
-                            
-                            Image(systemName: "star.fill")
-                                .foregroundColor(index <= post.starRating ? .yellow : .gray)
-                        }
-                        
-                        Text("(\(post.starRating).0)")
-                    }
-                    .font(.caption)
-                    
-                    Text(post.desc)
-                        .font(.callout)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 8)
-                        .padding(.horizontal)
+                    .ignoresSafeArea()
                 }
             }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .animation(.easeInOut, value: currentIndex)
+            .overlay(
+                LinearGradient(colors: [
+                    Color.clear,
+                    Color.black.opacity(0.2),
+                    Color.black.opacity(0.1),
+                    Color.white.opacity(0.4),
+                    Color.white,
+                    Color.white,
+                    Color.white,
+                ], startPoint: .top, endPoint: .bottom)
+            )
+            .ignoresSafeArea()
+            .offset(y: -100)
             
-            //Indicator (Custom Paging Control)
-            HStack (spacing: 10) {
-
-                ForEach ( posts.indices, id: \.self){ index in
-
-                    Circle()
-                        .fill(Color.black.opacity(currentIndex == index ? 1 : 0.1))
-                        .frame(width: 10, height: 10)
-                        .scaleEffect(currentIndex == index ? 1.4 : 1)
-                        .animation(.spring(), value: currentIndex == index)
+            
+            VStack(spacing: 10){
+//                Button {
+//
+//                } label: {
+//                    Image(systemName: "chevron.left")
+//                        .font(.title.bold())
+//                        .foregroundColor(.white)
+//                }
+//                    .foregroundColor(.primary)
+                
+                //Snap Carousel
+                SnapCarousel(trailingSpace: 150, index: $currentIndex, items: posts) {post in
+                    
+                    CardView(post: post)
                 }
+                .offset(y: getRect().height / 3.8)
+                
+                //Indicator (Custom Paging Control)
+                HStack (spacing: 10) {
+
+                    ForEach ( posts.indices, id: \.self){ index in
+
+                        Circle()
+                            .fill(Color.black.opacity(currentIndex == index ? 1 : 0.1))
+                            .frame(width: 7, height: 7)
+                            .scaleEffect(currentIndex == index ? 1.4 : 1)
+                            .animation(.spring(), value: currentIndex == index)
+                    }
+                }
+                .padding(.bottom, 18)
             }
-            .padding(.bottom, 40)
+            .frame(maxHeight: .infinity, alignment: .top)
         }
-        .frame(maxHeight: .infinity, alignment: .top)
-//        .onAppear{
-//            for index in 1...7 {
-//                posts.append(Post(postImage: "post\(index)"))
-//            }
-//        }
+    }
+    
+    @ViewBuilder
+    func CardView(post: Post)->some View{
+        VStack(spacing: 10){
+            GeometryReader { proxy in
+                let size = proxy.size
+                
+                Image(post.postImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: size.width, height: size.height)
+                    .cornerRadius(25)
+            }
+            .padding(15)
+            .background(Color.white)
+            .cornerRadius(30)
+            .frame(height: getRect().height / 2.5)
+            .padding(.bottom, 15)
+            
+            //Data
+            Text(post.title)
+                .font(.title2.bold())
+            
+            HStack(spacing: 3){
+                ForEach(1...5, id: \.self){ index in
+                    
+                    Image(systemName: "star.fill")
+                        .foregroundColor(index <= post.starRating ? .yellow : .gray)
+                }
+                
+                Text("(\(post.starRating).0)")
+            }
+            .font(.caption)
+            
+            Text(post.desc)
+                .font(.callout)
+                .lineLimit(3)
+                .multilineTextAlignment(.center)
+                .padding(.top, 8)
+                .padding(.horizontal)
+        }
     }
 }
 
