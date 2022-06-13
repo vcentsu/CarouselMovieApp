@@ -63,6 +63,7 @@ struct Home: View {
                 LinearGradient(colors: [
                     Color.clear,
                     Color.black.opacity(0.2),
+                    Color.black.opacity(0.1),
                     Color.white.opacity(0.4),
                     Color.white,
                     Color.white,
@@ -88,12 +89,12 @@ struct Home: View {
 
                         Circle()
                             .fill(Color.black.opacity(currentIndex == index ? 1 : 0.1))
-                            .frame(width: 10, height: 10)
+                            .frame(width: 7, height: 7)
                             .scaleEffect(currentIndex == index ? 1.4 : 1)
                             .animation(.spring(), value: currentIndex == index)
                     }
                 }
-                .padding(.bottom, 20)
+                .padding(.bottom, 18)
             }
             .frame(maxHeight: .infinity, alignment: .top)
     //        .onAppear{
