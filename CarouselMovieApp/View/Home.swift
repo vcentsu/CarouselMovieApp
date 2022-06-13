@@ -19,28 +19,6 @@ struct Home: View {
         
         ZStack{
             
-//            VStack(alignment: .leading, spacing: 12){
-//
-//                Button {
-//
-//                } label: {
-//                    Label {
-//                        Text("Back")
-//                            .fontWeight(.semibold)
-//                    } icon: {
-//                        Image(systemName: "chevron.left")
-//                            .font(.title2.bold())
-//                    }
-//                    .foregroundColor(.primary)
-//                }
-//
-//                Text("Marvel Movies")
-//                    .font(.title)
-//                    .fontWeight(.black)
-//            }
-//            .frame(maxWidth: .infinity, alignment: .leading)
-//            .padding()
-            
             //TabView
             TabView(selection: $currentIndex){
                 ForEach(posts.indices, id: \.self){ index in
@@ -73,14 +51,23 @@ struct Home: View {
             .ignoresSafeArea()
             .offset(y: -100)
             
+            
             VStack(spacing: 10){
+//                Button {
+//
+//                } label: {
+//                    Image(systemName: "chevron.left")
+//                        .font(.title.bold())
+//                        .foregroundColor(.white)
+//                }
+//                    .foregroundColor(.primary)
                 
                 //Snap Carousel
                 SnapCarousel(trailingSpace: 150, index: $currentIndex, items: posts) {post in
                     
                     CardView(post: post)
                 }
-                .offset(y: getRect().height / 4)
+                .offset(y: getRect().height / 3.8)
                 
                 //Indicator (Custom Paging Control)
                 HStack (spacing: 10) {
@@ -97,12 +84,6 @@ struct Home: View {
                 .padding(.bottom, 18)
             }
             .frame(maxHeight: .infinity, alignment: .top)
-    //        .onAppear{
-    //            for index in 1...7 {
-    //                posts.append(Post(postImage: "post\(index)"))
-    //            }
-    //        }
-  
         }
     }
     
@@ -118,6 +99,9 @@ struct Home: View {
                     .frame(width: size.width, height: size.height)
                     .cornerRadius(25)
             }
+            .padding(15)
+            .background(Color.white)
+            .cornerRadius(30)
             .frame(height: getRect().height / 2.5)
             .padding(.bottom, 15)
             
